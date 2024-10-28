@@ -10,154 +10,185 @@ using Domain.Features.Identity.ApplicationRoles;
 using Domain.Features.Identity.UserAccesses;
 
 {
-	using var applicationDbContext = new ApplicationDbContext();
+    using var applicationDbContext = new ApplicationDbContext();
 
-	Guid ownerUserId;
+    Guid ownerUserId;
 
-	{
-		var username = new Username(value: "Dariush");
-		var password = new Password(value: "1234512345");
-		var emailAddress = new EmailAddress(value: "DariushT@GMail.com");
+    {
+        var username = new Username(value: "Dariush");
+        var password = new Password(value: "1234512345");
+        var emailAddress = new EmailAddress(value: "DariushT@GMail.com");
 
-		var user =
-			new User(username: username, password: password, emailAddress: emailAddress);
+        var user =
+            new User(username: username, password: password, emailAddress: emailAddress);
 
-		applicationDbContext.Add(entity: user);
+        applicationDbContext.Add(entity: user);
 
-		await applicationDbContext.SaveChangesAsync();
+        await applicationDbContext.SaveChangesAsync();
 
-		ownerUserId = user.Id;
-	}
+        ownerUserId = user.Id;
+    }
 
-	Guid companyId;
+    #region UserProfile
+    Guid UserProfileID;
 
-	{
-		var companyName = new Name(value: "MyCompany");
-		var companyTitle = new Title(value: "My Company");
+    {
+        var fullName = new FullName(firstName: new Name(value: "Dariush"), lastName: new Name(value: "Tasdighi"));
 
-		var company =
-			new Company(userId: ownerUserId, name: companyName, title: companyTitle);
+        var userProfile = new UserProfile(fullName, ownerUserId);
 
-		applicationDbContext.Add(entity: company);
+        applicationDbContext.Add(entity: userProfile);
 
-		await applicationDbContext.SaveChangesAsync();
+        await applicationDbContext.SaveChangesAsync();
 
-		companyId = company.Id;
-	}
+        UserProfileID = userProfile.Id;
+    }
+    #endregion /UserProfile
 
-	Application application;
+    #region UserAddress
+    Guid UserAddressID;
 
-	{
-		var applicationName = new Name(value: "MyApplication");
-		var applicationTitle = new Title(value: "My Application");
+    {
+        var address = new Address(country: "Iran", state: "Tehran", "AriaShahr", new PostalCode(1111111111));
+        var userAddress = new UserAddress(address, ownerUserId);
 
-		application =
-			new Application(companyId: companyId, name: applicationName, title: applicationTitle);
+        applicationDbContext.Add(entity: userAddress);
 
-		applicationDbContext.Add(entity: application);
+        await applicationDbContext.SaveChangesAsync();
 
-		// نباید دستور ذیل را بنویسیم
-		//await applicationDbContext.SaveChangesAsync();
-	}
+        UserAddressID = userAddress.Id;
+    }
+    #endregion /UserAddress
 
-	{
-		var userValidIP4_1 = "1.1.1.1";
-		var userValidIP4_2 = "2.2.2.2";
-		var userValidIP4_3 = "1.1.1.1";
+    Guid companyId;
 
-		application.AddUserValidIP(ip: userValidIP4_1);
-		application.AddUserValidIP(ip: userValidIP4_2);
-		application.AddUserValidIP(ip: userValidIP4_3);
-	}
+    {
+        var companyName = new Name(value: "MyCompany");
+        var companyTitle = new Title(value: "My Company");
 
-	{
-		var applicationValidIP4_1 = "3.3.3.3";
-		var applicationValidIP4_2 = "4.4.4.4";
-		var applicationValidIP4_3 = "3.3.3.3";
+        var company =
+            new Company(userId: ownerUserId, name: companyName, title: companyTitle);
 
-		application.AddApplicationValidIP(ip: applicationValidIP4_1);
-		application.AddApplicationValidIP(ip: applicationValidIP4_2);
-		application.AddApplicationValidIP(ip: applicationValidIP4_3);
-	}
+        applicationDbContext.Add(entity: company);
 
-	await applicationDbContext.SaveChangesAsync();
+        await applicationDbContext.SaveChangesAsync();
 
-	{
-		var applicationRole1 =
-			new ApplicationRole(applicationId: application.Id,
-			name: new Name(value: "Owner"), code: new Code(10_000),
-			title: new Title(value: "Owner"));
+        companyId = company.Id;
+    }
 
-		applicationDbContext.Add(entity: applicationRole1);
+    Application application;
 
-		var applicationRole2 =
-			new ApplicationRole(applicationId: application.Id,
-			name: new Name(value: "Programmer"), code: new Code(9_000),
-			title: new Title(value: "Programmer"));
+    {
+        var applicationName = new Name(value: "MyApplication");
+        var applicationTitle = new Title(value: "My Application");
 
-		applicationDbContext.Add(entity: applicationRole2);
+        application =
+            new Application(companyId: companyId, name: applicationName, title: applicationTitle);
 
-		var applicationRole3 =
-			new ApplicationRole(applicationId: application.Id,
-			name: new Name(value: "Administrator"), code: new Code(8_000),
-			title: new Title(value: "Administrator"));
+        applicationDbContext.Add(entity: application);
 
-		applicationDbContext.Add(entity: applicationRole3);
+        // نباید دستور ذیل را بنویسیم
+        //await applicationDbContext.SaveChangesAsync();
+    }
 
-		await applicationDbContext.SaveChangesAsync();
-	}
+    {
+        var userValidIP4_1 = "1.1.1.1";
+        var userValidIP4_2 = "2.2.2.2";
+        var userValidIP4_3 = "1.1.1.1";
 
-	Guid simpleUserId;
+        application.AddUserValidIP(ip: userValidIP4_1);
+        application.AddUserValidIP(ip: userValidIP4_2);
+        application.AddUserValidIP(ip: userValidIP4_3);
+    }
 
-	{
-		var username = new Username(value: "AliReza");
-		var password = new Password(value: "1234512345");
-		var emailAddress = new EmailAddress(value: "AliReza@GMail.com");
+    {
+        var applicationValidIP4_1 = "3.3.3.3";
+        var applicationValidIP4_2 = "4.4.4.4";
+        var applicationValidIP4_3 = "3.3.3.3";
 
-		var user =
-			new User(username: username, password: password, emailAddress: emailAddress);
+        application.AddApplicationValidIP(ip: applicationValidIP4_1);
+        application.AddApplicationValidIP(ip: applicationValidIP4_2);
+        application.AddApplicationValidIP(ip: applicationValidIP4_3);
+    }
 
-		applicationDbContext.Add(entity: user);
+    await applicationDbContext.SaveChangesAsync();
 
-		await applicationDbContext.SaveChangesAsync();
+    {
+        var applicationRole1 =
+            new ApplicationRole(applicationId: application.Id,
+            name: new Name(value: "Owner"), code: new Code(10_000),
+            title: new Title(value: "Owner"));
 
-		simpleUserId = user.Id;
-	}
+        applicationDbContext.Add(entity: applicationRole1);
 
-	{
-		var userAccess =
-			new UserAccess(userId: simpleUserId, applicationId: application.Id);
+        var applicationRole2 =
+            new ApplicationRole(applicationId: application.Id,
+            name: new Name(value: "Programmer"), code: new Code(9_000),
+            title: new Title(value: "Programmer"));
 
-		applicationDbContext.Add(entity: userAccess);
+        applicationDbContext.Add(entity: applicationRole2);
 
-		await applicationDbContext.SaveChangesAsync();
-	}
+        var applicationRole3 =
+            new ApplicationRole(applicationId: application.Id,
+            name: new Name(value: "Administrator"), code: new Code(8_000),
+            title: new Title(value: "Administrator"));
+
+        applicationDbContext.Add(entity: applicationRole3);
+
+        await applicationDbContext.SaveChangesAsync();
+    }
+
+    Guid simpleUserId;
+
+    {
+        var username = new Username(value: "AliReza");
+        var password = new Password(value: "1234512345");
+        var emailAddress = new EmailAddress(value: "AliReza@GMail.com");
+
+        var user =
+            new User(username: username, password: password, emailAddress: emailAddress);
+
+        applicationDbContext.Add(entity: user);
+
+        await applicationDbContext.SaveChangesAsync();
+
+        simpleUserId = user.Id;
+    }
+
+    {
+        var userAccess =
+            new UserAccess(userId: simpleUserId, applicationId: application.Id);
+
+        applicationDbContext.Add(entity: userAccess);
+
+        await applicationDbContext.SaveChangesAsync();
+    }
 }
 
 {
-	using var applicationDbContext = new ApplicationDbContext();
+    using var applicationDbContext = new ApplicationDbContext();
 
-	var username =
-		new Username(value: "Dariush");
+    var username =
+        new Username(value: "Dariush");
 
-	var theUser =
-		await
-		applicationDbContext.Users
+    var theUser =
+        await
+        applicationDbContext.Users
 
-		.Include(current => current.Companies)
-			.ThenInclude(current => current.Applications)
-				.ThenInclude(current => current.UserValidIPs)
+        .Include(current => current.Companies)
+            .ThenInclude(current => current.Applications)
+                .ThenInclude(current => current.UserValidIPs)
 
-		.Include(current => current.Companies)
-			.ThenInclude(current => current.Applications)
-				.ThenInclude(current => current.ApplicationValidIPs)
+        .Include(current => current.Companies)
+            .ThenInclude(current => current.Applications)
+                .ThenInclude(current => current.ApplicationValidIPs)
 
-		.Where(current => current.Username == username)
-		.FirstOrDefaultAsync();
+        .Where(current => current.Username == username)
+        .FirstOrDefaultAsync();
 
-	if (theUser is not null)
-	{
-		var companyCount =
-			theUser.Companies.Count();
-	}
+    if (theUser is not null)
+    {
+        var companyCount =
+            theUser.Companies.Count();
+    }
 }

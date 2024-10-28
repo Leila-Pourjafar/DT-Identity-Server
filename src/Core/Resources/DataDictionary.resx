@@ -153,4 +153,7 @@
   <data name="Username" xml:space="preserve">
     <value>Username</value>
   </data>
+  <data name="PostalCode" xml:space="preserve">
+    <value>PostalCode</value>
+  </data>
 </root>

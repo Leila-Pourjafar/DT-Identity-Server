@@ -1,15 +1,28 @@
 ﻿using Domain.Seedwork;
+using Domain.SharedKernel;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Features.Identity.Users;
 
-public class UserAddress(string postalCode) : Entity
+public class UserAddress : Entity
 {
-	public const int PostalCodeMaxLength = 10;
+#pragma warning disable CS8618
+    [Obsolete]
+    private UserAddress() : base()
+    {
+    }
+#pragma warning restore CS8618
 
-	public string PostalCode { get; private set; } = postalCode;
+    public UserAddress(Address address, Guid userId) : base()
+    {
+        Address = address;
+    }
 
-	public void UpdatePostalCode(string postalCode)
-	{
-		PostalCode = postalCode;
-	}
+    [Required]
+    public Guid UserId { get; private set; }
+
+    public virtual User? User { get; private set; }
+
+    public Address Address { get; set; }
 }

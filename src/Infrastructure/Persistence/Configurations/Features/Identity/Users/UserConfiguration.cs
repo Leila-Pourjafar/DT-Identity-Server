@@ -7,55 +7,76 @@ namespace Persistence.Configurations.Features.Identity.Users;
 
 internal sealed class UserConfiguration : object, IEntityTypeConfiguration<User>
 {
-	public void Configure(EntityTypeBuilder<User> builder)
-	{
-		// **************************************************
-		// **************************************************
-		// **************************************************
-		builder
-			.HasKey(current => current.Id)
-			.IsClustered(clustered: false)
-			;
-		// **************************************************
+    public void Configure(EntityTypeBuilder<User> builder)
+    {
+        // **************************************************
+        // **************************************************
+        // **************************************************
+        builder
+            .HasKey(current => current.Id)
+            .IsClustered(clustered: false)
+            ;
+        // **************************************************
 
-		// **************************************************
-		builder
-			.Property(p => p.Username)
-			.HasMaxLength(maxLength: Username.MaxLength)
-			.HasConversion(id => id.Value, value => new Username(value));
+        // **************************************************
+        builder
+            .Property(p => p.Username)
+            .HasMaxLength(maxLength: Username.MaxLength)
+            .HasConversion(id => id.Value, value => new Username(value));
 
-		builder
-			.HasIndex(current => new { current.Username })
-			.IsUnique(unique: true)
-			;
-		// **************************************************
+        builder
+            .HasIndex(current => new { current.Username })
+            .IsUnique(unique: true)
+            ;
 
-		// **************************************************
-		builder
-			.Property(p => p.EmailAddress)
-			.HasMaxLength(maxLength: EmailAddress.MaxLength)
-			.HasConversion(id => id.Value, value => new EmailAddress(value));
+        // **************************************************
 
-		builder
-			.HasIndex(current => new { current.EmailAddress })
-			.IsUnique(unique: true)
-			;
-		// **************************************************
-		// **************************************************
-		// **************************************************
+        // **************************************************
+        builder
+            .Property(p => p.EmailAddress)
+            .HasMaxLength(maxLength: EmailAddress.MaxLength)
+            .HasConversion(id => id.Value, value => new EmailAddress(value));
 
-		// **************************************************
-		// **************************************************
-		// **************************************************
-		builder
-			.HasMany(current => current.Companies)
-			.WithOne(other => other.User)
-			.IsRequired(required: true)
-			.HasForeignKey(other => other.UserId)
-			.OnDelete(deleteBehavior: DeleteBehavior.NoAction)
-			;
-		// **************************************************
-		// **************************************************
-		// **************************************************
-	}
+        builder
+            .HasIndex(current => new { current.EmailAddress })
+            .IsUnique(unique: true)
+            ;
+
+        // **************************************************
+
+        // **************************************************
+        builder
+            .HasMany(current => current.Companies)
+            .WithOne(other => other.User)
+            .IsRequired(required: true)
+            .HasForeignKey(other => other.UserId)
+            .OnDelete(deleteBehavior: DeleteBehavior.NoAction)
+            ;
+
+        // **************************************************
+
+        // **************************************************
+        builder
+            .HasOne(current => current.UserProfile)
+            .WithOne(other => other.User)
+            .IsRequired(required: true)
+            .HasForeignKey<UserProfile>(other => other.UserID)
+            .OnDelete(deleteBehavior: DeleteBehavior.Cascade)
+            ;
+
+        // **************************************************
+
+        // **************************************************
+        builder
+           .HasMany(current => current.UserAddresses)
+           .WithOne(other => other.User)
+           .IsRequired(required: true)
+           .HasForeignKey(other => other.UserId)
+           .OnDelete(deleteBehavior: DeleteBehavior.Cascade)
+           ;
+
+        // **************************************************
+        // **************************************************
+        // **************************************************
+    }
 }
