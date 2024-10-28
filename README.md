@@ -1,19 +1,31 @@
 
-تغییرات مربوط به کلاس های ذیل می باشد .
+### # **تغییرات مربوط به کلاس های ذیل می باشد .**
+* User
+* UserProfile
+* UserAddress 
+
+## مسیر : 
 src\Core\Domain\Features\Identity\Users\
-ارتباط یک به یک کلاس User , UserProfile 
-1.User
-2.UserProfile
-3.UserAddress 
 
-تعریف دو [ComplexType] جدید در مسیر :src\Core\Domain\SharedKernel :
-1.Address
-2.PostalCode
+### کانفیگ : 
+* User
+* UserProfile 
 
-کانفیگ : 
-src\Infrastructure\Persistence\Configurations\Features\Identity\Users\
+### مسیر : 
+* src\Infrastructure\Persistence\Configurations\Features\Identity\Users\
 
-فراخوانی و استفاده از کلاس های ایجاد شده : 
-src\Presentation\Client\Program.cs
 
-![image](https://github.com/user-attachments/assets/cbd0ab96-6cf3-44dd-8f58-572cfbf4788f)
+### تعریف  ComplexType در SharedKernel : 
+1. Address
+2. PostalCode
+
+### مسیر : 
+src\Core\Domain\SharedKernel
+***
+
+### فراخوانی و استفاده از کلاس های ایجاد شده : 
+
+* src\Presentation\Client\Program.cs
+
+![](https://github.com/user-attachments/assets/cbd0ab96-6cf3-44dd-8f58-572cfbf4788f)
+***
